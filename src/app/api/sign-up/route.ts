@@ -21,7 +21,16 @@ export async function POST(request: Request) {
 
       const verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
         if(existingUserByEmail) {
-
+            if(existingUserByEmail.isVerified){
+                return Response.json({ success: false, message: "Email is already registered." }, { status: 400 });
+            }
+            else{
+                const hasedPassword = await bcrypt.hash(password, 10)
+                existingUserByEmail.password = hasedPassword
+                existingUserByEmail.verifyCode = verifyCode
+                existingUserByEmail.verifyCodeExpire = new Date(Date.now() + 3600000) // 1 hour
+                await existingUserByEmail.save()
+            }
         }
         else{
            const hasedPassword = await bcrypt.hash(password, 10)
@@ -44,7 +53,11 @@ export async function POST(request: Request) {
         }
 
         // Send verification email
-        
+       const emailResponse =  await sendVerificationEmail(email, username, verifyCode)
+       if(!emailResponse.success) {
+         return Response.json({ success: false, message: "Failed to send verification email." }, { status: 500 });
+       }
+         return Response.json({ success: true, message: "Registration successful. Please check your email for the verification code." }, { status: 200 });
     } catch (error) {
         console.error("Error during user registration:", error);
         return Response.json({ success: false, message: "An error occurred during registration. Please try again later." }, { status: 500 });
