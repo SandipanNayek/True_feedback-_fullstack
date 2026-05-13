@@ -50,12 +50,4 @@ export async function POST(request: Request) {
         return Response.json({ success: false, message: "An error occurred during registration. Please try again later." }, { status: 500 });
     }
 }
-                      isAcceptingMessages:boolean;
-                      messages:Message[];
-              })
-        }
-    } catch (error) {
-        console.error("Error during user registration:", error);
-        return Response.json({ success: false, message: "An error occurred during registration. Please try again later." }, { status: 500 });
-    }
-}
+                     
