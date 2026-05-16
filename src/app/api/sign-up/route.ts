@@ -11,7 +11,7 @@ export async function POST(request: Request) {
      const existingUserVerifiedByUsername = await UserModel.find({
         username,
         isVerified: true
-      })
+      });
 
       if(existingUserVerifiedByUsername ) {
        return Response.json({ success: false, message: "Username is already taken." }, { status: 400 });
