@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 
 
 type connectionObject = {
-    isConnected?: number
+      isConnected?: number;
 }
 
 const connection: connectionObject = {}
