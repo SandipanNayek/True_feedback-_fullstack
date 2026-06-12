@@ -1,4 +1,4 @@
-import { resend } from "@/lib/resend";
+import { resend } from "@/src/lib/resend";
 
 import VerificationEmail from "@/emails/verificationEmail";
 
