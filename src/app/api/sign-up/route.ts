@@ -1,14 +1,14 @@
-import dbConnect from "@/src/lib/dbConnect";
-import UserModel from "@/src/model/User";
+import dbConnect from "@/lib/dbConnect";
+import UserModel from "@/model/User";
 import bcrypt from "bcrypt";
-import { sendVerificationEmail } from "@/src/helper/sendVerificationemail";
+import { sendVerificationEmail } from "@/helper/sendVerificationemail";
 
 export async function POST(request: Request) {
     await dbConnect()
 
     try {
       const { email, username, password } = await request.json();
-     const existingUserVerifiedByUsername = await UserModel.find({
+     const existingUserVerifiedByUsername = await UserModel.findOne({
         username,
         isVerified: true
       });
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
               expiryDate.setHours(expiryDate.getHours() + 1)
 
               const newUser = new UserModel({
-                    username,
+                    userName: username,
                     email,
                     password:hasedPassword,
                     verifyCode,
