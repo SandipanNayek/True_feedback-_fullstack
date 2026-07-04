@@ -30,6 +30,24 @@ export async function GET(request: Request){
         }
 
         
+        const {username} = result.data
+
+      const existingVerifieduser = await UserModel.findOne({username: username , isVerified: true})
+
+      if(existingVerifieduser){
+        return Response.json({
+                success: false,
+                message: 'Username is already in use.',
+            },
+        {status:400})
+      }
+
+        return Response.json({
+                success: true,
+                message: 'Username is available.',
+                
+            },
+        {status:200})
     }catch(error){
         console.error('Error checking username uniqueness:', error);
         return Response.json({
