@@ -9,7 +9,7 @@ export async function POST(request: Request) {
     try {
       const { email, username, password } = await request.json();
      const existingUserVerifiedByUsername = await UserModel.findOne({
-        username,
+        userName:username,
         isVerified: true
       });
 
