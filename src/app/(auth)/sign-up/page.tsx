@@ -162,7 +162,11 @@ const Page = () => {
                     type="password"
                     className="h-12 px-4 text-lg"
                   />
-                  
+                  {form.formState.errors.password && (
+                    <p className="mt-2 text-sm text-red-500">
+                        {form.formState.errors.password.message}
+                    </p>
+                    )}
                </Field>
               )}
             />
