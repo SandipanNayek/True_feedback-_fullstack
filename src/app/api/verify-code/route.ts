@@ -6,9 +6,9 @@ export async function POST(request: Request){
     await dbConnect()
 
     try{
-        const {username , code} = await request.json()
+        const {userName , code} = await request.json()
         
-       const decodeUsername =  decodeURIComponent(username)
+       const decodeUsername =  decodeURIComponent(userName)
 
        const user = await UserModel.findOne({userName: decodeUsername})
 

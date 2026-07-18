@@ -10,10 +10,16 @@ export const authOptions: NextAuthOptions = {
         CredentialsProvider({
             id: "credentials",
             name: "Credentials",
-            credentials:{
-                email: { label: "Email ", type: "text" },
-                password: { label: "Password", type: "password" },
-            },
+            credentials: {
+                identifier: {
+                    label: "Email or Username",
+                    type: "text",
+                },
+                password: {
+                    label: "Password",
+                    type: "password",
+                },
+                },
             async authorize(credentials:any): Promise<any> {
                 await dbConnect();
                   
@@ -21,7 +27,7 @@ export const authOptions: NextAuthOptions = {
                     const user = await UserModel.findOne({
                     $or:[
                           {email: credentials.identifier},
-                          {username: credentials.identifier}
+                          {userName: credentials.identifier}
                     ]
                    })
                    if(!user){
