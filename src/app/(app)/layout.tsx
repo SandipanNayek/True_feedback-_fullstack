@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import AuthProvider from "@/context/AuthProvider";
-import { Toaster } from "@/components/ui/sonner";
+
 import Navbar from "@/components/Navbar"; // <-- Add this
 
 const geistSans = Geist({
@@ -33,7 +33,7 @@ export default function AppLayout({
         <main className="flex-1">
           {children}
         </main>
-        <Toaster />
+        
       </AuthProvider>
     </div>
   );
