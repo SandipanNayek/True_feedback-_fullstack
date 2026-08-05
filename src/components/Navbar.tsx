@@ -1,51 +1,55 @@
 'use client'
 
-import React from 'react'
 import Link from 'next/link'
-import { useSession,signOut } from 'next-auth/react'
-import {User} from 'next-auth'
+import { useSession, signOut } from 'next-auth/react'
+import { User } from 'next-auth'
 import { Button } from './ui/button'
 
 function Navbar() {
-    const {data: session} = useSession()
+  const { data: session } = useSession()
 
-    const user:User = session?.user as User
+  const user = session?.user as User | undefined
 
-return (
-  <nav className="border-b bg-white shadow-sm">
-    <div className="container mx-auto flex h-16 items-center justify-between px-6">
-      <Link
-        href="/"
-        className="text-2xl font-bold tracking-wide text-indigo-600 hover:text-indigo-700 transition-colors"
-      >
-        Mystery Message
+  return (
+  <nav className="bg-gray-900 p-4 text-white shadow-md md:p-6">
+    <div className="container mx-auto flex items-center justify-between">
+      
+      <Link href="/" className="text-2xl font-bold">
+        True Feedback
       </Link>
 
       {session ? (
         <div className="flex items-center gap-4">
-          <span className="text-gray-700 font-medium">
-            Welcome,{" "}
-            <span className="text-indigo-600">
+    <span className="hidden md:block text-[17px] font-medium text-white">
+            Welcome,&nbsp;
+            <span className="font-bold text-cyan-400">
               {user?.userName || user?.email}
             </span>
           </span>
 
           <Button
-            variant="destructive"
             onClick={() => signOut()}
+            variant="outline"
+            className="h-12 px-8 text-lg font-semibold bg-slate-100 text-black hover:bg-slate-200"
           >
             Logout
           </Button>
         </div>
       ) : (
-        <Link href="/sign-in">
-          <Button>Login</Button>
-        </Link>
+        <div className="ml-auto">
+          <Link href="/sign-in">
+            <Button
+              variant="outline"
+              className="h-12 px-8 text-lg font-semibold bg-slate-100 text-black hover:bg-slate-200"
+            >
+              Login
+            </Button>
+          </Link>
+        </div>
       )}
     </div>
   </nav>
-  );
+);
 }
-
 
 export default Navbar

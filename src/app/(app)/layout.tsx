@@ -26,7 +26,7 @@ export default function AppLayout({
 }) {
   return (
     <div
-      className={`${geistSans.variable} ${geistMono.variable} min-h-full flex flex-col`}
+      className={`${geistSans.variable} ${geistMono.variable} min-h-screen flex flex-col`}
     >
       <AuthProvider>
         <Navbar /> 

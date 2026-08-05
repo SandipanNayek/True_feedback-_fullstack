@@ -1,86 +1,118 @@
 'use client'
+
 import { useParams, useRouter } from 'next/navigation'
 import React from 'react'
-import {toast} from 'sonner'
+import { toast } from 'sonner'
 import * as z from "zod"
-import {Controller, useForm} from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { verifySchema } from '@/schemas/verifySchema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import axios, { AxiosError } from 'axios'
 import { ApiResponse } from '@/types/ApiResponse'
+
 import {
   Field,
-  FieldLabel, 
-} from "@/components/ui/field";
+  FieldLabel,
+} from "@/components/ui/field"
+
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-export default function VerifyAccount  ()  {
-    const router = useRouter()
-    const params = useParams<{username : string}>()
+import { Loader2 } from "lucide-react"
 
-    const form = useForm<z.infer<typeof verifySchema>>({
-          resolver: zodResolver(verifySchema),
-          defaultValues: {
-            code: "",
-          },
-        })
+export default function VerifyAccount() {
+  const router = useRouter()
+  const params = useParams<{ username: string }>()
 
-        const onSubmit = async (data: z.infer<typeof verifySchema>) => {
-            try {
-              const response =  await axios.post<ApiResponse>(`/api/verify-code`,{
-                    userName: params.username,
-                    code: data.code
-                })
-                console.log(response.status);
-              console.log(response.data);
+  const [isSubmitting, setIsSubmitting] = React.useState(false)
 
-              toast.success(response.data.message);
+  const form = useForm<z.infer<typeof verifySchema>>({
+    resolver: zodResolver(verifySchema),
+    defaultValues: {
+      code: "",
+    },
+  })
 
-              console.log("Redirecting...");
-              router.replace("/sign-in");
-            } catch (error) { 
-                const axiosError = error as AxiosError<ApiResponse>;
-                const errorMessage = axiosError.response?.data.message ?? "Something went wrong"
-                toast.error("Verification  failed", {
-                description: errorMessage,
-                });
-              } 
-            }
+  const onSubmit = async (data: z.infer<typeof verifySchema>) => {
+    setIsSubmitting(true)
+
+    try {
+      const response = await axios.post<ApiResponse>("/api/verify-code", {
+        userName: params.username,
+        code: data.code,
+      })
+
+      toast.success(response.data.message)
+
+      router.replace("/sign-in")
+    } catch (error) {
+      const axiosError = error as AxiosError<ApiResponse>
+
+      toast.error("Verification Failed", {
+        description:
+          axiosError.response?.data.message ?? "Something went wrong",
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-800">
-      <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
+    <div className="flex min-h-screen items-center justify-center bg-gray-800 px-4 py-8">
+      <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-lg sm:p-8">
         <div className="text-center">
-          <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
+          <h1 className="mb-4 text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl">
             Verify Your Account
           </h1>
-          <p className="mb-4">Enter the verification code sent to your email</p>
+
+          <p className="mb-6  text-gray-600 sm:text-[17px]">
+            Enter the verification code sent to your email.
+          </p>
         </div>
-        <form  onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          
-            <Controller
-              name="code"
-              control={form.control}
-              render={({ field }) => (
-                <Field >
-                  <FieldLabel className="text-lg font-bold tracking-wide text-slate-800">Verification Code</FieldLabel>
-                  <Input
-                    {...field}
-                    placeholder="Enter verification code"
-                    className="h-12 px-4 text-lg "
-                  />
-                  {form.formState.errors.code && (
-                    <p className="mt-2 text-sm text-red-500">
-                      {form.formState.errors.code.message}
-                    </p>
-                  )}
-                </Field>
-              )}
-            />
-            <Button className="w-full h-12 text-base font-semibold" type="submit">Verify</Button>
+
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-6"
+        >
+          <Controller
+            name="code"
+            control={form.control}
+            render={({ field }) => (
+              <Field>
+                <FieldLabel className="text-base font-semibold tracking-wide text-slate-800 sm:text-lg">
+                  Verification Code
+                </FieldLabel>
+
+                <Input
+                  {...field}
+                  placeholder="Enter verification code"
+                  className="h-12 px-4 text-base placeholder:text-[16px] sm:text-lg sm:placeholder:text-[17px]"
+                />
+
+                {form.formState.errors.code && (
+                  <p className="mt-2 text-sm text-red-500">
+                    {form.formState.errors.code.message}
+                  </p>
+                )}
+              </Field>
+            )}
+          />
+
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="h-12 w-full text-base font-semibold sm:text-lg"
+          >
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Verifying...
+              </>
+            ) : (
+              "Verify Account"
+            )}
+          </Button>
         </form>
       </div>
     </div>
   )
 }
-
-

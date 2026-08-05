@@ -47,7 +47,18 @@
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
 }
+[data-sonner-toast] {
+  font-size: 14px !important;
+}
 
+[data-sonner-toast] [data-title] {
+  font-size: 14px !important;
+  font-weight: 600;
+}
+
+[data-sonner-toast] [data-description] {
+  font-size: 14px !important;
+}
 :root {
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
