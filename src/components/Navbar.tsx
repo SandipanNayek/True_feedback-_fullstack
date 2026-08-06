@@ -11,7 +11,7 @@ function Navbar() {
   const user = session?.user as User | undefined
 
   return (
-  <nav className="bg-gray-900 p-4 text-white shadow-md md:p-6">
+ <nav className="fixed inset-x-0 top-0 z-50 border-b border-slate-700 bg-slate-900 backdrop-blur-md p-4 text-white shadow-lg md:p-6">
     <div className="container mx-auto flex items-center justify-between">
       
       <Link href="/" className="text-2xl font-bold">

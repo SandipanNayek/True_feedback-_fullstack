@@ -27,7 +27,7 @@ React.useEffect(() => {
     <div className="flex min-h-screen flex-col bg-gradient-to-br from-slate-900 via-gray-900 to-black text-white">
 
       {/* Main */}
-      <main className="flex flex-1 flex-col items-center justify-center px-6 py-4">
+      <main className="flex flex-1 flex-col items-center justify-center px-6 pt-4 pb-0">
 
         {/* Hero */}
         <section className="mb-4 max-w-4xl text-center">

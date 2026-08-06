@@ -81,11 +81,15 @@ function MessageCard({message , onMessageDelete}: MesageCardProps) {
         </CardAction>
       </CardHeader>
 
-      <CardContent>
-        <p className="text-sm leading-6 text-muted-foreground">
-            {message.content}
-        </p>
-      </CardContent>
+      <CardContent className="py-6">
+
+  <p className="break-words text-2xl font-medium leading-10 text-slate-800">
+
+    {message.content}
+
+  </p>
+
+</CardContent>
 
       <CardFooter className="justify-end border-t pt-4">
         <p className="text-xs text-muted-foreground">

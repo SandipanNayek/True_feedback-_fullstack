@@ -6,13 +6,24 @@ import { useSession } from 'next-auth/react'
 import { User } from 'next-auth'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Loader2, RefreshCcw } from 'lucide-react'
+
+import {
+  Loader2,
+  RefreshCcw,
+  Copy,
+  Link2,
+  MessageSquare,
+  ShieldCheck,
+} from 'lucide-react'
+
 import { toast } from 'sonner'
 
 import MessageCard from '@/components/MessageCard'
+
 import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import { Switch } from '@/components/ui/switch'
+import { Card, CardContent } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
 
 import { Message } from '@/model/User'
 import { acceptMessageSchema } from '@/schemas/acceptMessageSchema'
@@ -39,7 +50,9 @@ function UserDashboard() {
 
   const handleDeleteMessage = (messageId: string) => {
     setMessages((prev) =>
-      prev.filter((message) => message._id.toString() !== messageId)
+      prev.filter(
+        (message) => message._id.toString() !== messageId
+      )
     )
   }
 
@@ -60,7 +73,7 @@ function UserDashboard() {
 
       toast.error(
         axiosError.response?.data.message ??
-          'Failed to fetch message settings'
+          'Failed to fetch settings'
       )
     } finally {
       setIsSwitchLoading(false)
@@ -68,7 +81,7 @@ function UserDashboard() {
   }, [setValue])
 
   const fetchMessages = useCallback(
-    async (refresh: boolean = false) => {
+    async (refresh = false) => {
       setIsLoading(true)
 
       try {
@@ -79,7 +92,7 @@ function UserDashboard() {
         setMessages(response.data.messages || [])
 
         if (refresh) {
-          toast.success('Showing latest messages')
+          toast.success('Messages refreshed')
         }
       } catch (error) {
         const axiosError = error as AxiosError<ApiResponse>
@@ -116,7 +129,7 @@ function UserDashboard() {
   const copyToClipboard = async () => {
     await navigator.clipboard.writeText(profileUrl)
 
-    toast.success('Copied to clipboard')
+    toast.success('Profile link copied!')
   }
 
   const handleSwitchChange = async () => {
@@ -135,130 +148,307 @@ function UserDashboard() {
 
       toast.success(
         response.data.message ??
-          'Message settings updated successfully'
+          'Settings updated successfully'
       )
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>
 
       toast.error(
         axiosError.response?.data.message ??
-          'Failed to update message settings'
+          'Failed to update settings'
       )
     }
   }
 
   if (status === 'loading') {
     return (
-      <div className="flex h-screen items-center justify-center">
-        <Loader2 className="h-10 w-10 animate-spin" />
+      <div className="flex h-screen items-center justify-center bg-slate-950">
+        <Loader2 className="h-12 w-12 animate-spin text-cyan-400" />
       </div>
     )
   }
 
   if (!session?.user) {
     return (
-      <div className="flex h-screen items-center justify-center text-[17px] font-semibold">
+      <div className="flex h-screen items-center justify-center bg-slate-950 text-xl font-semibold text-white">
         Please login first.
       </div>
     )
   }
-    return (
-    <div className="mx-auto my-8 w-full max-w-7xl rounded-xl bg-white p-6 shadow-lg md:p-8">
-      <h1 className="mb-8 text-5xl font-bold text-gray-900">
-        User Dashboard
-      </h1>
 
-      
-      <div className="mb-8">
-        <h2 className="mb-3 text-[17px] font-semibold text-gray-800">
-          Copy Your Unique Link
-        </h2>
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-black px-5 py-12">
 
-        <div className="flex flex-col gap-3 md:flex-row">
-          <input
-            type="text"
-            value={profileUrl}
-            disabled
-            className="w-full rounded-lg border border-gray-300 bg-gray-100 px-4 py-3 text-[17px] outline-none"
-          />
+      <div className="mx-auto max-w-7xl">
 
-          <Button
-            onClick={copyToClipboard}
-            className="h-12 px-8 text-[17px] font-semibold"
-          >
-            Copy
-          </Button>
-        </div>
-      </div>
+        <div className="mb-12 text-center">
 
-      
-      <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center">
-        <div className="flex items-center gap-3">
-          <Switch
-            {...register("acceptMessages")}
-            checked={acceptMessages}
-            onCheckedChange={handleSwitchChange}
-            disabled={isSwitchLoading}
-          />
+          <h1 className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-5xl font-extrabold text-transparent">
 
-          <span className="text-[17px] font-medium">
-            Accept Messages :
-          </span>
+            True Feedback Dashboard
 
-          <span
-            className={`text-[17px] font-semibold ${
-              acceptMessages
-                ? "text-green-600"
-                : "text-red-500"
-            }`}
-          >
-            {acceptMessages ? "On" : "Off"}
-          </span>
+          </h1>
 
-          {isSwitchLoading && (
-            <Loader2 className="h-5 w-5 animate-spin" />
-          )}
+          <p className="mt-4 text-xl text-slate-300">
+
+            Welcome back 👋
+
+          </p>
+
+          <p className="text-slate-500">
+
+            Manage your anonymous messages
+
+          </p>
+
         </div>
 
-        <Button
-          variant="outline"
-          className="h-12 gap-2 text-[17px] font-semibold"
-          onClick={() => fetchMessages(true)}
-        >
-          {isLoading ? (
-            <>
-              <Loader2 className="h-5 w-5 animate-spin" />
-              Refreshing...
-            </>
+        <div className="mb-10 grid gap-6 md:grid-cols-2">
+
+          <Card className="rounded-3xl border border-slate-700 bg-slate-900/70 backdrop-blur-xl">
+
+            <CardContent className="flex items-center justify-between p-8">
+
+              <div>
+
+                <p className="text-lg text-slate-400">
+
+                  Total Messages
+
+                </p>
+
+                <h2 className="mt-3 text-5xl font-bold text-cyan-400">
+
+                  {messages.length}
+
+                </h2>
+
+              </div>
+
+              <MessageSquare className="h-16 w-16 text-cyan-400" />
+
+            </CardContent>
+
+          </Card>
+
+          <Card className="rounded-3xl border border-slate-700 bg-slate-900/70 backdrop-blur-xl">
+
+            <CardContent className="flex items-center justify-between p-8">
+
+              <div>
+
+                <p className="text-lg text-slate-400">
+
+                  Accepting Messages
+
+                </p>
+
+                <h2
+                  className={`mt-3 text-5xl font-bold ${
+                    acceptMessages
+                      ? 'text-green-400'
+                      : 'text-red-400'
+                  }`}
+                >
+                  {acceptMessages ? 'ON' : 'OFF'}
+                </h2>
+
+              </div>
+
+              <ShieldCheck className="h-16 w-16 text-green-400" />
+
+            </CardContent>
+
+          </Card>
+
+        </div>
+                {/* Profile Link */}
+
+        <Card className="mb-8 rounded-3xl border border-slate-700 bg-slate-900/70 backdrop-blur-xl">
+
+          <CardContent className="p-8">
+
+            <div className="mb-6 flex items-center gap-3">
+
+              <Link2 className="h-6 w-6 text-cyan-400" />
+
+              <h2 className="text-2xl font-bold text-white">
+
+                Public Profile Link
+
+              </h2>
+
+            </div>
+
+            <div className="flex flex-col gap-4 md:flex-row">
+
+              <Input
+                readOnly
+                value={profileUrl}
+                className="h-12 rounded-xl border-slate-700 bg-slate-800 text-white"
+              />
+
+              <Button
+                onClick={copyToClipboard}
+                className="h-12 rounded-xl bg-cyan-500 px-8 hover:bg-cyan-600"
+              >
+                <Copy className="mr-2 h-5 w-5" />
+
+                Copy Link
+
+              </Button>
+
+            </div>
+
+          </CardContent>
+
+        </Card>
+
+        {/* Settings */}
+
+        <Card className="mb-10 rounded-3xl border border-slate-700 bg-slate-900/70 backdrop-blur-xl">
+
+          <CardContent className="p-8">
+
+            <div className="mb-8 flex items-center gap-3">
+
+              <ShieldCheck className="h-6 w-6 text-cyan-400" />
+
+              <h2 className="text-2xl font-bold text-white">
+
+                Message Settings
+
+              </h2>
+
+            </div>
+
+            <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+
+              <div className="flex items-center gap-4">
+
+                <Switch
+                  {...register("acceptMessages")}
+                  checked={acceptMessages}
+                  onCheckedChange={handleSwitchChange}
+                  disabled={isSwitchLoading}
+                />
+
+                <div>
+
+                  <p className="text-lg font-semibold text-white">
+
+                    Accept Anonymous Messages
+
+                  </p>
+
+                  <p
+                    className={`font-medium ${
+                      acceptMessages
+                        ? "text-green-400"
+                        : "text-red-400"
+                    }`}
+                  >
+                    {acceptMessages
+                      ? "Currently ON"
+                      : "Currently OFF"}
+                  </p>
+
+                </div>
+
+                {isSwitchLoading && (
+                  <Loader2 className="h-5 w-5 animate-spin text-cyan-400" />
+                )}
+
+              </div>
+
+              <Button
+                onClick={() => fetchMessages(true)}
+                disabled={isLoading}
+                className="h-12 rounded-xl bg-cyan-500 px-8 text-lg hover:bg-cyan-600"
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    Refreshing...
+                  </>
+                ) : (
+                  <>
+                    <RefreshCcw className="mr-2 h-5 w-5" />
+                    Refresh Messages
+                  </>
+                )}
+              </Button>
+
+            </div>
+
+          </CardContent>
+
+        </Card>
+
+        {/* Messages */}
+
+        <div className="mb-8 flex items-center gap-3">
+
+          <MessageSquare className="h-7 w-7 text-cyan-400" />
+
+          <h2 className="text-3xl font-bold text-white">
+
+            Your Messages
+
+          </h2>
+
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-2">
+          {messages.length > 0 ? (
+            messages.map((message) => (
+              <div
+                key={message._id.toString()}
+                className="transition-all duration-300 hover:-translate-y-1"
+              >
+                <MessageCard
+                  message={message}
+                  onMessageDelete={handleDeleteMessage}
+                />
+              </div>
+            ))
           ) : (
-            <>
-              <RefreshCcw className="h-5 w-5" />
-              Refresh Messages
-            </>
+            <Card className="col-span-full rounded-3xl border border-dashed border-slate-700 bg-slate-900/70 backdrop-blur-xl">
+
+              <CardContent className="flex flex-col items-center justify-center py-20">
+
+                <div className="mb-6 text-7xl">
+                  📭
+                </div>
+
+                <h3 className="text-3xl font-bold text-white">
+                  No Messages Yet
+                </h3>
+
+                <p className="mt-4 max-w-xl text-center text-lg text-slate-400">
+                  You have not received any anonymous messages yet.
+                  Share your public profile link with your friends,
+                  classmates and colleagues to start receiving
+                  honest feedback.
+                </p>
+
+                <Button
+                  onClick={copyToClipboard}
+                  className="mt-8 rounded-xl bg-cyan-500 px-8 py-6 text-lg hover:bg-cyan-600"
+                >
+                  <Copy className="mr-2 h-5 w-5" />
+                  Copy Profile Link
+                </Button>
+
+              </CardContent>
+
+            </Card>
           )}
-        </Button>
+
+        </div>
+
       </div>
 
-      <Separator />
-
-      
-      <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {messages.length > 0 ? (
-          messages.map((message) => (
-            <MessageCard
-              key={message._id.toString()}
-              message={message}
-              onMessageDelete={handleDeleteMessage}
-            />
-          ))
-        ) : (
-          <div className="col-span-full rounded-xl border border-dashed border-gray-300 bg-gray-50 py-16 text-center">
-            <p className="text-[17px] font-medium text-gray-500">
-              No messages to display.
-            </p>
-          </div>
-        )}
-      </div>
     </div>
   )
 }
