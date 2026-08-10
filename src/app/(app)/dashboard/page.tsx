@@ -28,6 +28,7 @@ import { Input } from '@/components/ui/input'
 import { Message } from '@/model/User'
 import { acceptMessageSchema } from '@/schemas/acceptMessageSchema'
 import { ApiResponse } from '@/types/ApiResponse'
+import Link from 'next/link'
 
 function UserDashboard() {
   const [messages, setMessages] = useState<Message[]>([])
@@ -264,41 +265,77 @@ function UserDashboard() {
         </div>
                 {/* Profile Link */}
 
-        <Card className="mb-8 rounded-3xl border border-slate-700 bg-slate-900/70 backdrop-blur-xl">
+                  <Card className="mb-8 rounded-3xl border border-slate-700 bg-slate-900/70 backdrop-blur-xl">
 
-          <CardContent className="p-8">
+                    <CardContent className="p-8">
 
-            <div className="mb-6 flex items-center gap-3">
+                      <div className="mb-6 flex items-center gap-3">
 
-              <Link2 className="h-6 w-6 text-cyan-400" />
+                        <Link2 className="h-6 w-6 text-cyan-400" />
 
-              <h2 className="text-2xl font-bold text-white">
+                      </div>
 
-                Public Profile Link
+                      <Card className="mb-8 rounded-3xl border border-slate-700 bg-slate-900/70 backdrop-blur-xl">
+            <CardContent className="space-y-6 p-8">
 
-              </h2>
+              <div className="text-center">
 
-            </div>
+                <h2 className="text-3xl font-bold text-white">
+                  🎉 Your Public Profile
+                </h2>
 
-            <div className="flex flex-col gap-4 md:flex-row">
+                <p className="mt-3 text-lg text-slate-400">
+                  Share this page with your friends and start receiving anonymous
+                  messages.
+                </p>
 
-              <Input
-                readOnly
+              </div>
+
+              <input
                 value={profileUrl}
-                className="h-12 rounded-xl border-slate-700 bg-slate-800 text-white"
+                readOnly
+                className="h-12 w-full rounded-xl border border-slate-700 bg-slate-800 px-4 text-white outline-none"
               />
 
-              <Button
-                onClick={copyToClipboard}
-                className="h-12 rounded-xl bg-cyan-500 px-8 hover:bg-cyan-600"
-              >
-                <Copy className="mr-2 h-5 w-5" />
+              <div className="flex flex-wrap justify-center gap-4">
 
-                Copy Link
+                <Button
+                  onClick={copyToClipboard}
+                  className="bg-cyan-500 hover:bg-cyan-600"
+                >
+                  Copy Link
+                </Button>
 
-              </Button>
+                <Link
+                  href={`/u/${userName}`}
+                  target="_blank"
+                >
+                  <Button variant="outline">
+                    View Public Profile
+                  </Button>
+                </Link>
 
-            </div>
+                <Button
+                  className="bg-green-500 hover:bg-green-600"
+                  onClick={async () => {
+                    if (navigator.share) {
+                      await navigator.share({
+                        title: "True Feedback",
+                        text: "Send me anonymous messages!",
+                        url: profileUrl,
+                      });
+                    } else {
+                      copyToClipboard();
+                    }
+                  }}
+                >
+                  Share Profile
+                </Button>
+
+              </div>
+
+            </CardContent>
+          </Card>
 
           </CardContent>
 

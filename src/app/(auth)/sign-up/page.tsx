@@ -39,32 +39,36 @@ const Page = () => {
     },
   })
 
-  useEffect(() => {
-    const checkUsernameUnique = async () => {
-      if (debouncedUsername) {
-        setIsCheckingUsername(true)
-        setUsernameMessage("")
-
-        try {
-          const response = await axios.get(
-            `/api/check-username-unique?username=${debouncedUsername}`
-          )
-
-          setUsernameMessage(response.data.message)
-        } catch (error) {
-          const axiosError = error as AxiosError<ApiResponse>
-
-          setUsernameMessage(
-            axiosError.response?.data.message ?? "Error checking username"
-          )
-        } finally {
-          setIsCheckingUsername(false)
-        }
-      }
+ useEffect(() => {
+  const checkUsernameUnique = async () => {
+    if (!debouncedUsername) {
+      setUsernameMessage("")
+      setIsCheckingUsername(false)
+      return
     }
 
-    checkUsernameUnique()
-  }, [debouncedUsername])
+    setIsCheckingUsername(true)
+    setUsernameMessage("")
+
+    try {
+      const response = await axios.get(
+        `/api/check-username-unique?username=${encodeURIComponent(debouncedUsername)}`
+      )
+
+      setUsernameMessage(response.data.message)
+    } catch (error) {
+      const axiosError = error as AxiosError<ApiResponse>
+
+      setUsernameMessage(
+        axiosError.response?.data.message ?? "Error checking username"
+      )
+    } finally {
+      setIsCheckingUsername(false)
+    }
+  }
+
+  checkUsernameUnique()
+}, [debouncedUsername])
 
   const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
     setIsSubmitting(true)
@@ -76,7 +80,7 @@ const Page = () => {
         description: response.data.message,
       })
 
-      router.replace(`/verify/${data.username}`)
+      router.replace(`/verify/${encodeURIComponent(data.username)}`)
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>
 
@@ -117,10 +121,14 @@ const Page = () => {
                   </FieldLabel>
 
                   <Input
-                    {...field}
-                    placeholder="Enter your username"
-                    className="h-12 px-4 text-base placeholder:text-[16px] sm:text-lg sm:placeholder:text-[17px]"
-                  />
+                      {...field}
+                      onChange={(e) => {
+                        field.onChange(e)
+                        setUsername(e.target.value)
+                      }}
+                      placeholder="Enter your username"
+                      className="h-12 px-4 text-base placeholder:text-[16px] sm:text-lg sm:placeholder:text-[17px]"
+                    />
 
                   {isCheckingUsername && (
                     <div className="mt-2 flex items-center gap-2 text-sm text-gray-500">

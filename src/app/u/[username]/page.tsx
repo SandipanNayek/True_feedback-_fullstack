@@ -103,61 +103,131 @@ const username = params.username as string;
 
         {/* Heading */}
 
-        <div className="mb-10 text-center">
+        {/* Hero */}
 
-          <h1 className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-5xl font-extrabold text-transparent">
+<div className="relative mb-12 overflow-hidden rounded-3xl border border-slate-700 bg-slate-900/70 p-10 text-center backdrop-blur-xl">
 
-            True Feedback
+  <div className="absolute -left-20 -top-20 h-56 w-56 rounded-full bg-cyan-500/20 blur-3xl" />
+
+  <div className="absolute -bottom-20 -right-20 h-56 w-56 rounded-full bg-blue-500/20 blur-3xl" />
+
+  <div className="relative z-10">
+
+    <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-5xl shadow-2xl">
+
+      💬
+
+          </div>
+
+          <h1 className="bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 bg-clip-text text-5xl font-extrabold text-transparent md:text-6xl">
+
+            Send Anonymous Messages
 
           </h1>
 
-          <p className="mt-3 text-lg text-slate-400">
+          <p className="mt-6 text-xl text-slate-300">
 
-            Honest conversations begin anonymously.
+            You are sending a message to
+
+          </p>
+
+          <p className="mt-3 text-4xl font-bold text-cyan-400">
+
+            @{username}
+
+          </p>
+
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-slate-400">
+
+            Ask anything. Share your thoughts.
+            Give honest feedback without revealing your identity.
+
+            Your name will never be shown.
 
           </p>
 
         </div>
 
-        {/* Public Link */}
+      </div>
+        
 
-        <Card className="mb-8 rounded-3xl border border-slate-700 bg-slate-900/70 backdrop-blur-xl">
+          <Card className="mb-10 overflow-hidden rounded-3xl border border-slate-700 bg-slate-900/70 backdrop-blur-xl">
 
-          <CardContent className="p-8">
+            <CardContent className="p-8">
 
-            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-4">
 
-              <Link2 className="h-6 w-6 text-cyan-400" />
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500">
 
-              <h2 className="text-2xl font-bold text-white">
+                  <Link2 className="h-7 w-7 text-white" />
 
-                Public Profile Link
+                </div>
 
-              </h2>
+                <div>
 
-            </div>
+                  <h2 className="text-3xl font-bold text-white">
+                    Public Profile
+                  </h2>
 
-            <div className="mt-6 flex flex-col gap-4 md:flex-row">
+                  <p className="text-slate-400">
+                    Share this link to receive anonymous messages.
+                  </p>
 
-              <Input
-                readOnly
-                value={profileUrl}
-                className="h-12 rounded-xl border-slate-700 bg-slate-800 text-white"
-              />
+                </div>
 
-              <Button
-                onClick={copyProfileLink}
-                className="h-12 rounded-xl bg-cyan-500 hover:bg-cyan-600"
-              >
-                <Copy className="mr-2 h-5 w-5" />
-                Copy
-              </Button>
+              </div>
 
-            </div>
+              <div className="mt-8">
 
-          </CardContent>
+                <Input
+                  readOnly
+                  value={profileUrl}
+                  className="h-14 rounded-xl border-slate-700 bg-slate-800 text-lg text-white"
+                />
 
-        </Card>
+              </div>
+
+              <div className="mt-6 flex flex-wrap gap-4">
+
+                <Button
+                  onClick={copyProfileLink}
+                  className="bg-cyan-500 hover:bg-cyan-600"
+                >
+                  <Copy className="mr-2 h-5 w-5" />
+                  Copy Link
+                </Button>
+
+                <Button
+                  variant="outline"
+                  onClick={() =>
+                    window.open(profileUrl, "_blank")
+                  }
+                >
+                  View Profile
+                </Button>
+
+                <Button
+                  className="bg-green-500 hover:bg-green-600"
+                  onClick={async () => {
+                    if (navigator.share) {
+                      await navigator.share({
+                        title: "True Feedback",
+                        text: `Send me anonymous messages!`,
+                        url: profileUrl,
+                      });
+                    } else {
+                      copyProfileLink();
+                    }
+                  }}
+                >
+                  Share Profile
+                </Button>
+
+              </div>
+
+            </CardContent>
+
+          </Card>
 
         {/* Send Message */}
 

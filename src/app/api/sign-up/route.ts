@@ -30,6 +30,8 @@ export async function POST(request: Request) {
                 existingUserByEmail.verifyCode = verifyCode
                 existingUserByEmail.verifyCodeExpire = new Date(Date.now() + 3600000) // 1 hour
                 await existingUserByEmail.save()
+                console.log("Updated user:", existingUserByEmail.userName);
+                console.log("Updated email:", existingUserByEmail.email);
             }
         }
         else{
@@ -49,7 +51,10 @@ export async function POST(request: Request) {
                     messages:[]
               });
 
-              await newUser.save()
+              await newUser.save();
+
+            console.log("Saved new user:", newUser.userName);
+            console.log("Saved email:", newUser.email);
         }
 
         // Send verification email
